@@ -47,7 +47,7 @@ y = np_utils.to_categorical(y, dimof_output)
 batch_size = 128
 dimof_middle = 100
 dropout = 0.2
-countof_epoch = 100
+countof_epoch = 1000
 verbose = 0
 print('batch_size: ', batch_size)
 print('dimof_middle: ', dimof_middle)
@@ -65,6 +65,8 @@ model.add(Dense(dimof_middle, init='uniform', activation='tanh'))
 model.add(Dropout(dropout))
 model.add(Dense(dimof_output, init='uniform', activation='softmax'))
 model.compile(loss='mse', optimizer='sgd', metrics=['accuracy'])
+
+model.summary()
 
 
 # Train
@@ -84,6 +86,9 @@ print()
 # model.predict_classes(X, verbose=verbose)
 print('prediction of [1, 1]: ', model.predict_classes(np.array([[1, 1]]), verbose=verbose))
 print('prediction of [8, 8]: ', model.predict_classes(np.array([[8, 8]]), verbose=verbose))
+print('prediction of [5, 5]: ', model.predict_classes(np.array([[5, 5]]), verbose=verbose))
+print('prediction of [6, 6]: ', model.predict_classes(np.array([[6, 6]]), verbose=verbose))
+print('prediction of [2, 10]: ', model.predict_classes(np.array([[2, 10]]), verbose=verbose))
 
 
 # Plot
