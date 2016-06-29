@@ -3,13 +3,12 @@ from __future__ import print_function
 
 import pandas as pd
 import numpy as np
-from keras.utils import  np_utils
+from keras.utils import np_utils
 
 import seaborn as sns
 
 from keras.models import Sequential
-from keras.layers import Dense,Dropout
-
+from keras.layers import Dense, Dropout
 
 data = np.array([
     [0, 0, 0],
@@ -25,7 +24,7 @@ data = np.array([
 ])
 
 # Set data
-data = np.vstack((data, data, data, data)) # Just for sufficient input
+data = np.vstack((data, data, data, data))  # Just for sufficient input
 data = pd.DataFrame(data, columns=['x', 'y', 'class'])
 
 # Split X and y
@@ -38,10 +37,8 @@ dimof_output = np.max(y) + 1
 print('dimof_input: ', dimof_input)
 print('dimof_output: ', dimof_output)
 
-
 # Set y categorical
 y = np_utils.to_categorical(y, dimof_output)
-
 
 # Set constants
 batch_size = 128
@@ -55,7 +52,6 @@ print('dropout: ', dropout)
 print('countof_epoch: ', countof_epoch)
 print('verbose: ', verbose)
 print()
-
 
 # Set model
 model = Sequential()
@@ -81,7 +77,6 @@ print('loss: ', loss)
 print('accuracy: ', accuracy)
 print()
 
-
 # Predict
 # model.predict_classes(X, verbose=verbose)
 print('prediction of [1, 1]: ', model.predict_classes(np.array([[1, 1]]), verbose=verbose))
@@ -96,9 +91,6 @@ sns.lmplot('x', 'y', data, 'class', fit_reg=False).set(title='Data')
 data_ = data.copy()
 data_['class'] = model.predict_classes(X, verbose=0)
 sns.lmplot('x', 'y', data_, 'class', fit_reg=False).set(title='Trained Result')
-data_['class'] = [ 'Error' if is_error else 'Non Error' for is_error in data['class'] != data_['class']]
+data_['class'] = ['Error' if is_error else 'Non Error' for is_error in data['class'] != data_['class']]
 sns.lmplot('x', 'y', data_, 'class', fit_reg=False).set(title='Errors')
 None
-
-
-
