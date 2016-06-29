@@ -34,6 +34,8 @@ data_cleaner.save_cleaned()
 
 print('Parsing csv file')
 new_data = pd.read_csv(cleaned_data_filename   , delimiter=',')
+
+raw_data = new_data.copy(deep=True)
 new_data = data_preproces.convert_objects_to_categorical(new_data,['name','title','culture',
                                                                    'mother','father','heir','house',
                                                                    'spouse'])
@@ -48,7 +50,6 @@ outputs = new_data['isAlive']
 
 X = inputs.values
 y = outputs.values
-
 
 
 # Get dimensions of input and output
@@ -76,9 +77,9 @@ print('verbose: ', verbose)
 print()
 
 model = Sequential()
-model.add(Dense(dimof_middle, input_dim=dimof_input, init='uniform', activation='sigmoid'))
+model.add(Dense(dimof_middle, input_dim=dimof_input, init='uniform', activation='tanh'))
 model.add(Dropout(dropout))
-model.add(Dense(dimof_middle, input_dim=dimof_input, init='uniform', activation='sigmoid'))
+model.add(Dense(dimof_middle, input_dim=dimof_input, init='uniform', activation='tanh'))
 model.add(Dropout(dropout))
 model.add(Dense(dimof_output, input_dim=dimof_input, init='uniform', activation='softmax'))
 model.compile(loss='mse', optimizer='sgd', metrics=['accuracy'])
@@ -98,6 +99,10 @@ loss, accuracy = model.evaluate(X, y, verbose=verbose)
 print('loss: ', loss)
 print('accuracy: ', accuracy)
 print()
+
+
+for i in range(0,5):
+    print('prediction of '+str(raw_data.iloc[i,6])+' : ', model.predict_classes(inputs.iloc[i].values.reshape((1,20)), verbose=verbose))
 
 
 
