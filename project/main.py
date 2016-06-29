@@ -103,7 +103,7 @@ print()
 
 for i in range(0,5):
     print('prediction of '+str(raw_data.iloc[i,6])+' : ', model.predict_classes(inputs.iloc[i].values.reshape((1,20)), verbose=verbose))
-
+    print('probability of ' + str(raw_data.iloc[i,6]) + ' : ', model.predict_proba(inputs.iloc[i].values.reshape((1,20)), verbose=verbose))
 
 
 
