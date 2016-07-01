@@ -21,3 +21,17 @@ class PreProcessor(object):
         return data
 
 
+    '''
+        Normalize data
+    '''
+    def normalize_data(self, data, column_list):
+
+        for column in column_list:
+            df = data[column]
+            data[column] = (df - df.mean()) / (df.max() - df.min())
+
+
+        return data
+
+
+
