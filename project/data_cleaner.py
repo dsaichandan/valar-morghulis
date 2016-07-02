@@ -112,8 +112,8 @@ class DataCleaner(object):
         print("Images pairing...")
         self.characters_csv["imageLink"] = ""
         paired = 0
-        for index, row_csv in data_cleaner.characters_csv.iterrows():
-            for index2, row_json in data_cleaner.characters_json.iterrows():
+        for index, row_csv in self.characters_csv.iterrows():
+            for index2, row_json in self.characters_json.iterrows():
                 if str(row_csv['name']) == str(row_json['name']):
                     if pd.notnull(row_json['imageLink']):
                         link = str(row_json['imageLink'])
@@ -133,6 +133,10 @@ class DataCleaner(object):
         self.characters_csv.to_csv(self.cleaned_characters_data_filename)
         print('Created cleaned_data.csv')
         print("---------------------------------")
+
+
+    def __add_battle_data(self):
+        pass
 
 
 if __name__ == '__main__':

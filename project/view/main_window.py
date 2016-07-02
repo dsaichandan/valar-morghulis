@@ -2,6 +2,7 @@ from PySide import QtGui
 from dashboard_tab import DashboardTab
 from characters_tab import CharactersTab
 from houses_tab import HousesTab
+from configuration_tab import ConfigurationTab
 
 
 class MainWindow(QtGui.QMainWindow):
@@ -25,4 +26,5 @@ class MainWindow(QtGui.QMainWindow):
         self.tabs.addTab(DashboardTab(), "Dashboard")
         self.tabs.addTab(CharactersTab(), "Characters")
         self.tabs.addTab(HousesTab(), "Houses")
+        self.tabs.addTab(ConfigurationTab(), "NN configuration")
         self.setCentralWidget(self.tabs)
