@@ -109,8 +109,34 @@ class DataCleaner(object):
         print("---------------------------------")
         print("Houses cleaned.")
         print("---------------------------------")
+        print("Images pairing...")
+        self.characters_csv["imageLink"] = ""
+        paired = 0
+        for index, row_csv in data_cleaner.characters_csv.iterrows():
+            for index2, row_json in data_cleaner.characters_json.iterrows():
+                if str(row_csv['name']) == str(row_json['name']):
+                    if pd.notnull(row_json['imageLink']):
+                        link = str(row_json['imageLink'])
+                        self.characters_csv.set_value(index, 'imageLink', link.split('/')[4])
+                    else:
+                        self.characters_csv.set_value(index, 'imageLink', 'no_image.jpg')
+                    paired += 1
+                    if paired % 100 == 0:
+                        print(paired)
+                    break
+        print("---------------------------------")
+        print("Images pairing completed.")
+        print("---------------------------------")
+        print(self.characters_csv)
 
     def save_cleaned(self):
         self.characters_csv.to_csv(self.cleaned_characters_data_filename)
         print('Created cleaned_data.csv')
         print("---------------------------------")
+
+
+if __name__ == '__main__':
+    data_cleaner = DataCleaner()
+    data_cleaner.load_data()
+    data_cleaner.clean()
+    data_cleaner.save_cleaned()
