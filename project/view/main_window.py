@@ -6,9 +6,9 @@ from configuration_tab import ConfigurationTab
 
 
 class MainWindow(QtGui.QMainWindow):
-
-    def __init__(self):
+    def __init__(self, neural_network):
         super(MainWindow, self).__init__()
+        self.neural_network = neural_network
         self.tabs = None
         self.setWindowTitle('Valar Morghulis')
         self.setWindowIcon(QtGui.QIcon('./view/images/favicon.jpg'))
@@ -26,5 +26,5 @@ class MainWindow(QtGui.QMainWindow):
         self.tabs.addTab(DashboardTab(), "Dashboard")
         self.tabs.addTab(CharactersTab(), "Characters")
         self.tabs.addTab(HousesTab(), "Houses")
-        self.tabs.addTab(ConfigurationTab(), "NN configuration")
+        self.tabs.addTab(ConfigurationTab(self.neural_network), "NN configuration")
         self.setCentralWidget(self.tabs)

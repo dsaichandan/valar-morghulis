@@ -5,14 +5,15 @@ Valar Morghulis Team
 '''
 
 from PySide import QtGui
+from model.KerasWrapper import KerasWrapper
+from model.parameters import Parameters
 import sys
 
 from view.main_window import MainWindow  # @NoMove
 
 if __name__ == '__main__':
-
+    neural_network = KerasWrapper()
     app = QtGui.QApplication(sys.argv)
-    ex = MainWindow()
+    ex = MainWindow(neural_network)
 
     sys.exit(app.exec_())
-
