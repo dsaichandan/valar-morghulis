@@ -1,38 +1,5 @@
 [
     {
-        "_id": "56fa9ae4c9e167a3645523cc",
-        "name": "Henly (House Ashford)",
-        "__v": 0,
-        "updatedAt": "2016-03-29T15:10:28.314Z",
-        "createdAt": "2016-03-29T15:10:28.313Z",
-        "ancestralWeapon": []
-    },
-    {
-        "_id": "56fa9ae4c9e167a3645523cd",
-        "title": "Maester",
-        "name": "Norren (House Mooton)",
-        "__v": 0,
-        "updatedAt": "2016-03-29T15:10:28.377Z",
-        "createdAt": "2016-03-29T15:10:28.377Z",
-        "ancestralWeapon": []
-    },
-    {
-        "_id": "56fa9ae4c9e167a3645523ce",
-        "name": "House of the Undying servitor",
-        "__v": 0,
-        "updatedAt": "2016-03-29T15:10:28.425Z",
-        "createdAt": "2016-03-29T15:10:28.425Z",
-        "ancestralWeapon": []
-    },
-    {
-        "_id": "56fa9ae4c9e167a3645523cf",
-        "name": "The House of Black and White",
-        "__v": 0,
-        "updatedAt": "2016-03-29T15:10:28.430Z",
-        "createdAt": "2016-03-29T15:10:28.430Z",
-        "ancestralWeapon": []
-    },
-    {
         "_id": "56fa9ae5c9e167a3645523d0",
         "imageLink": "/misc/images/houses/House_Farwynd.png",
         "cadetBranch": "House Farwynd of the Lonely Light",
