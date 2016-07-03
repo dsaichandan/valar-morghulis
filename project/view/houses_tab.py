@@ -23,17 +23,18 @@ class HousesTab(QtGui.QWidget):
         self.main_layout.addWidget(self.scroll)
 
         self.grid = QtGui.QGridLayout()
-        data_cleaner = dc.DataCleaner()
-        data_cleaner.load_data()
+        self.data_cleaner = dc.DataCleaner()
+        self.data_cleaner.load_data()
 
         it = 0
         it2 = 0
-        self.model = data_cleaner.houses_json
+        self.model = self.data_cleaner.houses_json
 
         self.display_model = self.model
+        self.display_model = self.display_model.sort_values('_id', ascending=False)
         for index, row in self.display_model.iterrows():
-            filename = str(row['imageLink'])
-            item = hli.HouseListItem(str(row['name']), filename.split('/')[4])
+
+            item = hli.HouseListItem(row, self.data_cleaner.characters_csv)
 
             self.grid.addWidget(item, it2, it)
             it += 1
@@ -65,7 +66,7 @@ class HousesTab(QtGui.QWidget):
             self.display_model = self.display_model[self.display_model['name'].str.contains(filter_text)]
         for index, row in self.display_model.iterrows():
             filename = str(row['imageLink'])
-            item = hli.HouseListItem(str(row['name']), filename.split('/')[4])
+            item = hli.HouseListItem(row, self.data_cleaner.characters_csv)
             self.grid.addWidget(item, it2, it)
             it += 1
             if it % 6 == 5:

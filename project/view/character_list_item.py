@@ -36,4 +36,3 @@ class CharacterListItem(QtGui.QWidget):
 
     def show_dialog(self):
         self.dialog = CharacterDialog(self.data)
-        self.dialog.show()
