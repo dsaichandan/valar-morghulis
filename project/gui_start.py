@@ -14,6 +14,7 @@ from view.main_window import MainWindow  # @NoMove
 if __name__ == '__main__':
     neural_network = KerasWrapper()
     app = QtGui.QApplication(sys.argv)
+    app.setStyle('Plastique')
     ex = MainWindow(neural_network)
 
     sys.exit(app.exec_())

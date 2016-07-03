@@ -31,11 +31,10 @@ class CharactersTab(QtGui.QWidget):
         self.model = data_cleaner.characters_csv
 
         self.display_model = self.model
-        self.display_model = self.model[self.model['name'].str.contains("Tar")]
         self.display_model = self.display_model.sort_values('popularity', ascending=False)
         for index, row in self.display_model.iterrows():
             filename = str(row['imageLink'])
-            item = cli.CharacterListItem(str(row['name']), filename)
+            item = cli.CharacterListItem(row)
 
             self.grid.addWidget(item, it2, it)
             it += 1
