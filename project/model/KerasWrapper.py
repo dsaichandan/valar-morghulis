@@ -47,14 +47,15 @@ class KerasWrapper(object):
         dimof_input = X.shape[1]
         dimof_output = np.max(y) + 1
 
-        print('dimof_input: ', dimof_input)
-        print('dimof_output: ', dimof_output)
-        print('batch_size: ', self.params.batch_size)
-        print('dimof_middle: ', self.params.nodes)
-        print('dropout: ', self.params.dropout)
-        print('countof_epoch: ', self.params.epochs)
-        print('verbose: ', self.params.verbose)
-        print()
+        if (summary):
+            print('dimof_input: ', dimof_input)
+            print('dimof_output: ', dimof_output)
+            print('batch_size: ', self.params.batch_size)
+            print('dimof_middle: ', self.params.nodes)
+            print('dropout: ', self.params.dropout)
+            print('countof_epoch: ', self.params.epochs)
+            print('verbose: ', self.params.verbose)
+            print()
 
         self.model = Sequential()
         self.model.add(
@@ -81,6 +82,7 @@ class KerasWrapper(object):
         return loss, accuracy
 
     def prediction(self):
+
         predictions = []
         for i in self.params.excluded_rows:
             chosen_class = self.model.predict_classes(
@@ -90,7 +92,12 @@ class KerasWrapper(object):
                 self.inputs.iloc[i].values.reshape((1, len(self.params.input_params))),
                 verbose=0)
             character = str(self.raw_data.iloc[i, 6])
-            data = [chosen_class, probability, character]
+
+            # rounding on 2 decimals
+            probability[0][0] = int((probability[0][0] * 100) + 0.5) / 100.0
+            probability[0][1] = int((probability[0][1] * 100) + 0.5) / 100.0
+
+            data = (character, str(probability[0][0]), str(probability[0][1]))
             predictions.append(data)
             self._prediction_summary(chosen_class, probability, character)
 

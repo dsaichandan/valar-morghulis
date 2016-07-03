@@ -1,4 +1,5 @@
 from PySide import QtGui
+from project.model.ResultTableModel import *
 
 
 class ConfigurationTab(QtGui.QWidget):
@@ -9,6 +10,8 @@ class ConfigurationTab(QtGui.QWidget):
         self.status = self.training_status[0]
         self.loss_value = 'NaN'
         self.accuracy_value = 'NaN'
+        self.headers_data = ['Character name', 'Dead (%)', 'Alive (%)']
+        self.table_data = []
 
         self.neural_network = neural_network
 
@@ -25,9 +28,14 @@ class ConfigurationTab(QtGui.QWidget):
         train_button = QtGui.QPushButton("Start NN training", self)
         train_button.clicked.connect(self.train_neural_network)
 
+        result_group_box = QtGui.QGroupBox('Prediction results')
+        result_layout = self.__create_result_area()
+        result_group_box.setLayout(result_layout)
+
         grid.addWidget(constants_group_box, 0, 0)
         grid.addWidget(status_group_box, 1, 0)
         grid.addWidget(train_button, 2, 0)
+        grid.addWidget(result_group_box, 0, 1)
 
         self.setLayout(grid)
 
@@ -38,8 +46,8 @@ class ConfigurationTab(QtGui.QWidget):
         self.loss_value = str(loss) + ' %'
         self.accuracy_value = str(accuracy) + ' %'
         self.status = self.training_status[2]
-        self.__refresh_data()
-        self.neural_network.prediction()
+        self.table_data = self.neural_network.prediction()
+        self.__refresh_data(table=True)
 
     def __create_constants_area(self):
         layout = QtGui.QFormLayout()
@@ -95,10 +103,19 @@ class ConfigurationTab(QtGui.QWidget):
 
         return layout
 
-    def __create_actions_area(self):
-        pass
+    def __create_result_area(self):
+        self.table_model = ResultTableModel(self, self.table_data, self.headers_data)
+        self.table_view = QtGui.QTableView()
+        self.table_view.setModel(self.table_model)
+        self.table_view.setSortingEnabled(True)
+        self.table_view.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+        layout = QtGui.QVBoxLayout(self)
+        layout.addWidget(self.table_view)
+        return layout
 
-    def __refresh_data(self):
+    def __refresh_data(self, table=False):
         self.accuracy_value_label.setText(self.accuracy_value)
         self.loss_value_label.setText(self.loss_value)
         self.status_value_label.setText(self.status)
+        if (table):
+            self.table_model.changeData(self.table_data)
