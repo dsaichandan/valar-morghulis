@@ -43,8 +43,15 @@ Output parameter that contains information about if character is dead was transf
 softmax function works better with that shape of data.
 
 
-#Predict death chance for characters 
+#Predict death chance for characters and results
 Characters that were chosen for obtaining their death predictions were excluded from train samples,
 because it was important not to adapt neural network with character attributes that were being predicted.
+Neural network successfully accomplished training with 77% accuracy and 17% loss. Main reason to be found for not getting better accuracy
+is lack of attributes data of certain characters. Dataset contains many characters which age, culture, and house is unknown.
+In those cases it was needed to set attribute as unknown in numerical representation.
+Number -1 was chosen as a bottom line because tanh activation function ranges from -1 to 1.
+
+
+
 
  
