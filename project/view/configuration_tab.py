@@ -132,6 +132,7 @@ class ConfigurationTab(QtGui.QWidget):
         self.character_edit.setCompleter(self.character_completer)
         character_add_push_button = QtGui.QPushButton('Add', self)
         character_add_push_button.clicked.connect(self.__add_character__to_predictions)
+
         box_layout = QtGui.QHBoxLayout(self)
         box_layout.addWidget(character_label)
         box_layout.addWidget(self.character_edit)
@@ -176,9 +177,18 @@ class ConfigurationTab(QtGui.QWidget):
         self.table_view.setModel(self.table_model)
         self.table_view.setSortingEnabled(True)
         self.table_view.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+
+        character_clear_push_button = QtGui.QPushButton('Clear', self)
+        character_clear_push_button.clicked.connect(self.__clear_characters_in_table)
         layout = QtGui.QVBoxLayout(self)
         layout.addWidget(self.table_view)
+        layout.addWidget(character_clear_push_button)
         return layout
+
+    def __clear_characters_in_table(self):
+        self.table_data = []
+        self.neural_network.params.excluded_rows = []
+        self.__refresh_data(table=True)
 
     def __refresh_data(self, table=False):
         self.accuracy_value_label.setText(self.accuracy_value)
