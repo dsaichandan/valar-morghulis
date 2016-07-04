@@ -53,5 +53,10 @@ Number -1 was chosen as a bottom line because tanh activation function ranges fr
 
 
 
+#Conclucsion
+From the table data we can conclude that famous characters have higher death chance.
+Most interesting result is for character named Walder Frey who is alive in data set, but was murdered in the last season of the show by Arya Stark.
+Given result shows us that popularity of a character can drastically influence on chances of character being dead.
+
 
  
