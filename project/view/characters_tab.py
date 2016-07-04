@@ -1,7 +1,7 @@
 from PySide import QtGui, QtCore
-import project.data_cleaner as dc
-import pandas as pd
+
 import character_list_item as cli
+import project.data_cleaner as dc
 
 
 class CharactersTab(QtGui.QWidget):
@@ -33,7 +33,6 @@ class CharactersTab(QtGui.QWidget):
         self.display_model = self.model
         self.display_model = self.display_model.sort_values('popularity', ascending=False)
         for index, row in self.display_model.iterrows():
-            filename = str(row['imageLink'])
             item = cli.CharacterListItem(row)
 
             self.grid.addWidget(item, it2, it)
@@ -63,11 +62,11 @@ class CharactersTab(QtGui.QWidget):
         it2 = 0
         self.display_model = self.model
         if len(filter_text) > 0:
-            self.display_model = self.display_model[self.display_model['name'].str.contains(filter_text)]
+            self.display_model = self.display_model[
+                self.display_model['name'].str.lower().str.contains(filter_text.lower())]
         self.display_model = self.display_model.sort_values('popularity', ascending=False)
         for index, row in self.display_model.iterrows():
-            filename = str(row['imageLink'])
-            item = cli.CharacterListItem(str(row['name']), filename)
+            item = cli.CharacterListItem(row)
             self.grid.addWidget(item, it2, it)
             it += 1
             if it % 6 == 5:
