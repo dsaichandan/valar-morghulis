@@ -24,7 +24,7 @@ class MainWindow(QtGui.QMainWindow):
     def initialize(self):
         self.tabs = QtGui.QTabWidget()
         self.tabs.addTab(DashboardTab(), "Dashboard")
-        self.tabs.addTab(CharactersTab(), "Characters")
+        self.tabs.addTab(CharactersTab(self.neural_network), "Characters")
         self.tabs.addTab(HousesTab(), "Houses")
         self.tabs.addTab(ConfigurationTab(self.neural_network), "NN configuration")
         self.setCentralWidget(self.tabs)

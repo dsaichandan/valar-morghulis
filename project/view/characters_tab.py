@@ -5,8 +5,10 @@ import project.data_cleaner as dc
 
 
 class CharactersTab(QtGui.QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, neural_network, parent=None):
         super(CharactersTab, self).__init__(parent)
+        self.neural_network = neural_network
+
         self.main_layout = QtGui.QVBoxLayout()
         self.filter_field = QtGui.QLineEdit()
         self.filter_widget = QtGui.QWidget()
@@ -33,8 +35,7 @@ class CharactersTab(QtGui.QWidget):
         self.display_model = self.model
         self.display_model = self.display_model.sort_values('popularity', ascending=False)
         for index, row in self.display_model.iterrows():
-            item = cli.CharacterListItem(row)
-
+            item = cli.CharacterListItem(row, self.neural_network)
             self.grid.addWidget(item, it2, it)
             it += 1
             if it % 6 == 5:
@@ -66,7 +67,7 @@ class CharactersTab(QtGui.QWidget):
                 self.display_model['name'].str.lower().str.contains(filter_text.lower())]
         self.display_model = self.display_model.sort_values('popularity', ascending=False)
         for index, row in self.display_model.iterrows():
-            item = cli.CharacterListItem(row)
+            item = cli.CharacterListItem(row, self.neural_network)
             self.grid.addWidget(item, it2, it)
             it += 1
             if it % 6 == 5:

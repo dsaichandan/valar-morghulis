@@ -49,6 +49,7 @@ class KerasWrapper(object):
         X, y = self.__prepare_data()
 
         if (self.model_constructed):
+            self.model.set_weights(self.network_weights)
             return X, y
 
         dimof_input = X.shape[1]
@@ -73,6 +74,9 @@ class KerasWrapper(object):
         self.model.add(Dropout(self.params.dropout))
         self.model.add(Dense(dimof_output, input_dim=dimof_input, init='uniform', activation='softmax'))
         self.model.compile(loss='mse', optimizer='sgd', metrics=['accuracy'])
+
+        self.network_weights = self.model.get_weights()
+        print(self.network_weights)
 
         if (summary):
             self.model.summary()
@@ -125,4 +129,5 @@ class KerasWrapper(object):
         print('Name: ' + character)
         print('Dead: ' + str(probability[0][0]) + ' %')
         print('Alive: ' + str(probability[0][1]) + ' %')
+        print('Chosen class: ' + str(chosen_class))
         print(30 * '-')

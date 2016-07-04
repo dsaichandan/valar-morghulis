@@ -1,3 +1,4 @@
+# coding=utf-8
 import pandas as pd
 from PySide import QtGui
 
@@ -5,10 +6,11 @@ size = 180
 
 
 class CharacterDialog(QtGui.QDialog):
-    def __init__(self, data, parent=None):
+    def __init__(self, data, neural_network, parent=None):
         super(CharacterDialog, self).__init__(parent)
+        self.neural_network = neural_network
         self.data = data
-        print(data)
+        # print(data)
         self.grid = QtGui.QGridLayout()
         self.setWindowTitle(str(self.data['name']))
         self.setWindowIcon(QtGui.QIcon('./view/images/favicon.jpg'))
@@ -50,6 +52,10 @@ class CharacterDialog(QtGui.QDialog):
 
         self.popularity_bar = QtGui.QProgressBar(self)
         self.prediction_bar = QtGui.QProgressBar(self)
+
+        self.prediction_push_button = QtGui.QPushButton('Glaeson iā Morghon', self)
+        self.prediction_push_button.clicked.connect(self.__death_predict)
+
         css = """
             QProgressBar {
                 border: 1px solid grey;
@@ -58,11 +64,9 @@ class CharacterDialog(QtGui.QDialog):
                 font-weight: bold;
                 padding: 1px;
                 height: 17px;
-
             }
 
             QProgressBar::chunk {
-
                 background-color: #c62828;
                 width: 15px;
             }
@@ -87,9 +91,22 @@ class CharacterDialog(QtGui.QDialog):
         self.grid.addWidget(prediction_label, 11, 0)
         self.grid.addWidget(self.popularity_bar, 10, 1, 1, 3)
         self.grid.addWidget(self.prediction_bar, 11, 1, 1, 3)
+        self.grid.addWidget(self.prediction_push_button, 12, 1, 1, 3)
         self.populate_data()
         self.setLayout(self.grid)
         self.show()
+
+    def __death_predict(self):
+        self.neural_network.params.excluded_rows = []
+        index = self.data.values[0]
+        self.neural_network.params.excluded_rows.append(index)
+        loss, accuracy = self.neural_network.start_whole_process()
+        print(accuracy)
+        print(loss)
+        results = self.neural_network.prediction()
+        death_percentage = results[0][2]
+        self.data['death'] = death_percentage
+        self.prediction_bar.setValue(int(float(death_percentage) * 100))
 
     def populate_data(self):
         name_data = QtGui.QLabel(str(self.data['name']))
@@ -203,7 +220,7 @@ class CharacterDialog(QtGui.QDialog):
         else:
             popularity = 0
         self.popularity_bar.setValue(popularity)
-        self.prediction_bar.setValue(popularity)
+        self.prediction_bar.setValue(0)
         self.grid.addWidget(image_data, 0, 2, 7, 2)
         self.grid.addWidget(title_data, 7, 3)
         self.grid.addWidget(noble_data, 8, 3)

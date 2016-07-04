@@ -1,11 +1,13 @@
 from PySide import QtGui, QtCore
 from character_dialog import CharacterDialog
+
 size = 200
 
 
 class CharacterListItem(QtGui.QWidget):
-    def __init__(self, data, parent=None):
+    def __init__(self, data, neural_network, parent=None):
         super(CharacterListItem, self).__init__(parent)
+        self.neural_network = neural_network
         self.data = data
         layout = QtGui.QGridLayout()
         layout.setAlignment(QtCore.Qt.AlignVCenter)
@@ -35,4 +37,4 @@ class CharacterListItem(QtGui.QWidget):
         self.dialog = None
 
     def show_dialog(self):
-        self.dialog = CharacterDialog(self.data)
+        self.dialog = CharacterDialog(self.data, self.neural_network)

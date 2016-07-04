@@ -42,9 +42,10 @@ new_data.to_csv('./../datasets/processed_data.csv')
 
 new_data.fillna(-1, inplace=True)
 
-input_params = ['title', 'male', 'culture', 'house', 'isAliveMother', 'isAliveFather', 'isAliveHeir', 'isMarried',
-                'isNoble', 'age',
-                'numDeadRelations', 'boolDeadRelations']  # ,'isPopular','popularity']
+# 'title','age',
+input_params = ['male', 'house', 'culture', 'isAliveMother', 'isAliveFather', 'isAliveHeir', 'isMarried',
+                'isNoble',
+                'numDeadRelations', 'boolDeadRelations', 'isPopular', 'popularity']
 output_params = ['isAlive']
 
 exclude_rows = [1558, 1656, 1749]
