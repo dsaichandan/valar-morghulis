@@ -5,7 +5,7 @@ from keras.layers import Dense, Dropout, BatchNormalization
 from keras.callbacks import BaseLogger, ProgbarLogger, History, ModelCheckpoint, EarlyStopping
 from project.data_preproces import PreProcessor
 from project.data_cleaner import DataCleaner
-from project.model.Parameters import Parameters
+from project.model.parameters import Parameters
 import pandas as pd
 import numpy as np
 

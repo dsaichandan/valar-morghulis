@@ -1,7 +1,7 @@
 from PySide import QtGui, QtCore
-import project.data_cleaner as dc
-import pandas as pd
+
 import house_list_item as hli
+import project.data_cleaner as dc
 
 
 class HousesTab(QtGui.QWidget):
@@ -63,10 +63,10 @@ class HousesTab(QtGui.QWidget):
         it2 = 0
         self.display_model = self.model
         if len(filter_text) > 0:
-            self.display_model = self.display_model[self.display_model['name'].str.contains(filter_text)]
+            self.display_model = self.display_model[
+                self.display_model['name'].str.lower().str.contains(filter_text.lower())]
         self.display_model = self.display_model.sort_values('isImportant', ascending=False)
         for index, row in self.display_model.iterrows():
-            filename = str(row['imageLink'])
             item = hli.HouseListItem(row, self.data_cleaner.characters_csv)
             self.grid.addWidget(item, it2, it)
             it += 1

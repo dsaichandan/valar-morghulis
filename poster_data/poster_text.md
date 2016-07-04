@@ -30,16 +30,16 @@ Certain attributes must be encoded into numbers because data must have only nume
 since those values can vary from different ranges normalizing given data is a must.
 
 #Create neural network architecture and run training
-Necessary neural network model was required in order the best accuracy.
-After many tweaks model that gave best results is:
+Adequate neural network model was required for the best accuracy.
+After many tweaks model that gave the best results has the following features:
 1. Dense layer with 100 nodes, uniform initialization and tanh activation function
 2. Batch normalization layer with uniform beta initialization
 3. Dense layer with 200 nodes, uniform initialization and tanh activation function
 4. Dropout layer with 0.2 dropout and 
 5. Dense output layer with softmax activation function
 Reason for running one dropout layer is to prevent overfitting of the data.
-Batch normalization layer led to better accuracy and faster accuracy that was no previously achieved.
-Output parameter that contains information about if character is dead was transformed into binary data, reason for it is that
+Batch normalization layer led to better accuracy and faster performance that was not previously achieved.
+Output parameter (character deathe prediction) was transformed into binary data, reason for it is that
 softmax function works better with that shape of data.
 
 
