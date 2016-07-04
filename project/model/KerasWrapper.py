@@ -15,16 +15,20 @@ class KerasWrapper(object):
         self.params = parameters
         self.data_cleaner = DataCleaner()
         self.pre_processor = PreProcessor()
+        self.load_data()
+        self.model_constructed = False
 
     def clean_data(self):
         self.data_cleaner.load_data()
         self.data_cleaner.clean()
         self.data_cleaner.save_cleaned()
 
-    def __prepare_data(self):
+    def load_data(self):
         self.data = pd.read_csv(self.params.file_path)
-
         self.raw_data = self.data.copy(deep=True)
+
+    def __prepare_data(self):
+
         self.data = self.pre_processor.convert_objects_to_categorical(self.data, self.params.converting_columns)
         self.data = self.pre_processor.normalize_data(self.data, self.params.converting_columns)
         self.data.fillna(-1, inplace=True)
@@ -43,6 +47,9 @@ class KerasWrapper(object):
     def create_model(self, summary=True):
 
         X, y = self.__prepare_data()
+
+        if (self.model_constructed):
+            return X, y
 
         dimof_input = X.shape[1]
         dimof_output = np.max(y) + 1
@@ -70,12 +77,18 @@ class KerasWrapper(object):
         if (summary):
             self.model.summary()
 
+        self.model_constructed = True
+
         return X, y
 
     def start_train(self, input_data, output_data):
+        callbacks = []
+        if (self.params.early):
+            callbacks.append(
+                EarlyStopping(patience=self.params.patience, verbose=self.params.verbose, monitor='val_loss'))
         return self.model.fit(input_data, output_data, validation_split=0.2,
                               batch_size=self.params.batch_size, nb_epoch=self.params.epochs,
-                              verbose=self.params.verbose, shuffle=True)
+                              verbose=self.params.verbose, shuffle=True, callbacks=callbacks)
 
     def evaluate(self, input, output):
         loss, accuracy = self.model.evaluate(input, output, verbose=self.params.verbose)
@@ -97,7 +110,7 @@ class KerasWrapper(object):
             probability[0][0] = int((probability[0][0] * 100) + 0.5) / 100.0
             probability[0][1] = int((probability[0][1] * 100) + 0.5) / 100.0
 
-            data = (character, str(probability[0][0]), str(probability[0][1]))
+            data = (i, character, str(probability[0][0]), str(probability[0][1]))
             predictions.append(data)
             self._prediction_summary(chosen_class, probability, character)
 

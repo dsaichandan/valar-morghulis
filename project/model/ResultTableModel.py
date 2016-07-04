@@ -20,7 +20,7 @@ class ResultTableModel(QAbstractTableModel):
             return None
         elif role != Qt.DisplayRole:
             return None
-        return self.my_data[index.row()][index.column()]
+        return self.my_data[index.row()][index.column() + 1]
 
     def headerData(self, col, orientation, role):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
@@ -37,7 +37,7 @@ class ResultTableModel(QAbstractTableModel):
         """sort table by given column number col"""
         self.emit(SIGNAL("layoutAboutToBeChanged()"))
         self.my_data = sorted(self.my_data,
-                           key=operator.itemgetter(col))
+                              key=operator.itemgetter(col))
         if order == Qt.DescendingOrder:
             self.my_data.reverse()
         self.emit(SIGNAL("layoutChanged()"))

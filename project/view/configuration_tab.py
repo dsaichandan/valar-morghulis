@@ -12,6 +12,7 @@ class ConfigurationTab(QtGui.QWidget):
         self.accuracy_value = 'NaN'
         self.headers_data = ['Character name', 'Dead (%)', 'Alive (%)']
         self.table_data = []
+        self.character_count = 0
 
         self.neural_network = neural_network
 
@@ -32,10 +33,15 @@ class ConfigurationTab(QtGui.QWidget):
         result_layout = self.__create_result_area()
         result_group_box.setLayout(result_layout)
 
+        character = QtGui.QGroupBox('Character selection')
+        character_layout = self.__create_character_selection_area()
+        character.setLayout(character_layout)
+
         grid.addWidget(constants_group_box, 0, 0)
         grid.addWidget(status_group_box, 1, 0)
         grid.addWidget(train_button, 2, 0)
-        grid.addWidget(result_group_box, 0, 1)
+        grid.addWidget(character, 0, 1)
+        grid.addWidget(result_group_box, 1, 1)
 
         self.setLayout(grid)
 
@@ -51,36 +57,97 @@ class ConfigurationTab(QtGui.QWidget):
 
     def __create_constants_area(self):
         layout = QtGui.QFormLayout()
-        batch_size_edit = QtGui.QLineEdit(self)
+        self.batch_size_edit = QtGui.QLineEdit(self)
         batch_size_label = QtGui.QLabel("Batch size: ", self)
-        batch_size_label.setBuddy(batch_size_edit)
-        batch_size_edit.setText(str(self.neural_network.params.batch_size))
+        batch_size_label.setBuddy(self.batch_size_edit)
+        self.batch_size_edit.setText(str(self.neural_network.params.batch_size))
 
-        number_of_nodes_edit = QtGui.QLineEdit(self)
+        self.number_of_nodes_edit = QtGui.QLineEdit(self)
         number_of_nodes_label = QtGui.QLabel("Number of nodes per layer: ", self)
-        number_of_nodes_label.setBuddy(number_of_nodes_edit)
-        number_of_nodes_edit.setText(str(self.neural_network.params.nodes))
+        number_of_nodes_label.setBuddy(self.number_of_nodes_edit)
+        self.number_of_nodes_edit.setText(str(self.neural_network.params.nodes))
 
-        epochs_edit = QtGui.QLineEdit(self)
+        self.epochs_edit = QtGui.QLineEdit(self)
         epochs_label = QtGui.QLabel("Number of epochs: ", self)
-        epochs_label.setBuddy(epochs_edit)
-        epochs_edit.setText(str(self.neural_network.params.epochs))
+        epochs_label.setBuddy(self.epochs_edit)
+        self.epochs_edit.setText(str(self.neural_network.params.epochs))
 
-        early_stopping = QtGui.QCheckBox("Enable early stopping ", self)
-        early_stopping.setChecked(self.neural_network.params.early)
+        self.early_stopping = QtGui.QCheckBox("Enable early stopping ", self)
+        self.early_stopping.setChecked(self.neural_network.params.early)
 
-        patience_edit = QtGui.QLineEdit(self)
+        self.patience_edit = QtGui.QLineEdit(self)
         patience_label = QtGui.QLabel("Patience level: ", self)
-        patience_label.setBuddy(patience_edit)
-        patience_edit.setText(str(self.neural_network.params.patience))
+        patience_label.setBuddy(self.patience_edit)
+        self.patience_edit.setText(str(self.neural_network.params.patience))
 
-        layout.addRow(batch_size_label, batch_size_edit)
-        layout.addRow(number_of_nodes_label, number_of_nodes_edit)
-        layout.addRow(epochs_label, epochs_edit)
-        layout.addRow(early_stopping)
-        layout.addRow(patience_label, patience_edit)
+        save_button = QtGui.QPushButton('Save configuration', self)
+        reset_defaults_button = QtGui.QPushButton('Reset defaults', self)
+        save_button.clicked.connect(self.save_configuration)
+        reset_defaults_button.clicked.connect(self.reset_defaults)
+
+        layout.addRow(batch_size_label, self.batch_size_edit)
+        layout.addRow(number_of_nodes_label, self.number_of_nodes_edit)
+        layout.addRow(epochs_label, self.epochs_edit)
+        layout.addRow(self.early_stopping)
+        layout.addRow(patience_label, self.patience_edit)
+        layout.addRow(save_button)
+        layout.addRow(reset_defaults_button)
 
         return layout
+
+    def save_configuration(self):
+        batch_size = self.batch_size_edit.text()
+        nodes = self.number_of_nodes_edit.text()
+        epochs = self.epochs_edit.text()
+        early = self.early_stopping.isChecked()
+        patience = self.patience_edit.text()
+
+        try:
+            self.neural_network.params.batch_size = int(batch_size)
+            self.neural_network.params.nodes = int(nodes)
+            self.neural_network.params.epochs = int(epochs)
+            self.neural_network.params.early = early
+            self.neural_network.params.patience = int(patience)
+        except:
+            self.reset_defaults()
+
+    def reset_defaults(self):
+        self.neural_network.params.reset_default()
+        self.__refresh_constants_values()
+
+    def __refresh_constants_values(self):
+        self.batch_size_edit.setText(str(self.neural_network.params.batch_size))
+        self.number_of_nodes_edit.setText(str(self.neural_network.params.nodes))
+        self.epochs_edit.setText(str(self.neural_network.params.epochs))
+        self.early_stopping.setChecked(self.neural_network.params.early)
+        self.patience_edit.setText(str(self.neural_network.params.patience))
+
+    def __create_character_selection_area(self):
+        self.character_edit = QtGui.QLineEdit(self)
+        self.character_completer = QtGui.QCompleter(self.neural_network.raw_data['name'].values, self)
+
+        self.character_completer.setCaseSensitivity(Qt.CaseInsensitive)
+        character_label = QtGui.QLabel('Character to predict')
+        character_label.setBuddy(self.character_edit)
+        self.character_edit.setCompleter(self.character_completer)
+        character_add_push_button = QtGui.QPushButton('Add', self)
+        character_add_push_button.clicked.connect(self.__add_character__to_predictions)
+        box_layout = QtGui.QHBoxLayout(self)
+        box_layout.addWidget(character_label)
+        box_layout.addWidget(self.character_edit)
+        box_layout.addWidget(character_add_push_button)
+
+        return box_layout
+
+    def __add_character__to_predictions(self):
+        data = self.character_edit.text()
+        row = self.neural_network.raw_data.loc[self.neural_network.raw_data['name'] == self.character_edit.text()]
+        index = row.index.tolist()
+        if (self.character_count >= 5 or len(index) == 0):
+            return
+        self.neural_network.params.excluded_rows.append(index[0])
+        self.table_data.append((index[0], data, 'NaN', 'NaN'))
+        self.__refresh_data(table=True)
 
     def __create_training_results_area(self):
         layout = QtGui.QFormLayout()
