@@ -8,7 +8,14 @@ Steps that were required in order to accomplish death prediction of characters w
 4. Prediction of death chance for characters that were not used during train period
 Technologies that were used are *Keras neural network abstraction* and *PySide GUI* library.
 
+#Data gathering and filtering
+Data gathered from these sources had a lot errors, undefined fields and were prone to typos (such as few different names for same house, culture etc.). Also there were differences between these two sources and they were merged into one dataset containing all the important information from both of them. Combined dataset included:
 
+* 1946 characters
+* 453 houses
+* 24 cultures
+
+Main problem with the final dataset is that still there are 384 characters with unknown house, 1268 with unknown culture, and 1513 with unkown age. But that problem can't be fixed because there is not enough information for all characters in this franchise provided by author .
 
 #Data normalization and encoding
 Datasets for given task consists of character attributes:
