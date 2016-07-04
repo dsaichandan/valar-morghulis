@@ -55,7 +55,6 @@ class CharacterDialog(QtGui.QDialog):
                 border: 1px solid grey;
                 border-radius: 3px;
                 text-align: center;
-                color: white;
                 font-weight: bold;
                 padding: 1px;
                 height: 17px;
