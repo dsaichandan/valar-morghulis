@@ -18,7 +18,7 @@ class Parameters(object):
             self.converting_columns = ['name', 'title', 'culture', 'mother', 'father', 'heir', 'house', 'spouse']
             self.input_params = ['title', 'male', 'culture', 'house', 'isAliveMother', 'isAliveFather', 'isAliveHeir',
                                  'isMarried', 'isNoble', 'age',
-                                 'numDeadRelations', 'boolDeadRelations']  # ,'isPopular','popularity']
+                                 'numDeadRelations', 'boolDeadRelations', 'isPopular', 'popularity']
             self.output_params = ['isAlive']
             self.default_params = Parameters(default=not default)
 
