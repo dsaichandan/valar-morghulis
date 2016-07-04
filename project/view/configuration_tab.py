@@ -1,5 +1,6 @@
 from PySide import QtGui
 from project.model.ResultTableModel import *
+import pandas as pd
 
 
 class ConfigurationTab(QtGui.QWidget):
@@ -49,8 +50,8 @@ class ConfigurationTab(QtGui.QWidget):
         self.status = self.training_status[1]
         self.__refresh_data()
         loss, accuracy = self.neural_network.start_whole_process()
-        self.loss_value = str(loss) + ' %'
-        self.accuracy_value = str(accuracy) + ' %'
+        self.loss_value = str(loss * 100) + ' %'
+        self.accuracy_value = str(accuracy * 100) + ' %'
         self.status = self.training_status[2]
         self.table_data = self.neural_network.prediction()
         self.__refresh_data(table=True)
@@ -144,10 +145,21 @@ class ConfigurationTab(QtGui.QWidget):
         data = self.character_edit.text()
         row = self.neural_network.raw_data.loc[self.neural_network.raw_data['name'] == self.character_edit.text()]
         index = row.index.tolist()
+
+        if (index in self.neural_network.params.excluded_rows):
+            return
+
         if (self.character_count >= 5 or len(index) == 0):
             return
         self.neural_network.params.excluded_rows.append(index[0])
-        self.table_data.append((index[0], data, 'NaN', 'NaN'))
+
+        death = 'NaN'
+        life = 'NaN'
+        if (not row['death'].isnull().values.any()):
+            death = str(row['death'].values[0] * 100)
+            life = str(100 - (row['death'].values[0] * 100))
+
+        self.table_data.append((index[0], data, death, life))
         self.__refresh_data(table=True)
 
     def __create_training_results_area(self):

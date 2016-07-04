@@ -19,7 +19,6 @@ class MainWindow(QtGui.QMainWindow):
 
         self.initialize()
 
-        self.show()
 
     def initialize(self):
         self.tabs = QtGui.QTabWidget()
