@@ -1,12 +1,12 @@
 #Introduction
-Game of Thrones is a well known series that has many deaths of main characters.
-Predicting character deaths in famous series can be challenging but also can lead to interesting results.
+Game of Thrones is a title of well known TV show/books franchise, originally created by George R. R. Martin, in which there is enormouse number of deaths of characters, especially of the main characters.
+Predicting character deaths in this famous franchise can be challenging, but also can lead to interesting results.
 Steps that were required in order to accomplish death prediction of characters were:
-1. Filter out needed attributes from different datasets into one that can be used in neural network
-2. Normalize and encode attributes for better prediction results
-3. Create neural network architecture and run training
-4. Predict death chance for characters that were not used during train period
-Technologies that were used are Keras neural network abstraction and PySide GUI library.
+1. Data gathering and filtering out needed attributes from different datasets into one that can be used in neural network
+2. Normalizing and encoding attributes for better prediction results
+3. Creation of neural network architecture and running of the train process
+4. Prediction of death chance for characters that were not used during train period
+Technologies that were used are *Keras neural network abstraction* and *PySide GUI* library.
 
 
 
