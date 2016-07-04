@@ -31,7 +31,7 @@ class HousesTab(QtGui.QWidget):
         self.model = self.data_cleaner.houses_json
 
         self.display_model = self.model
-        self.display_model = self.display_model.sort_values('_id', ascending=False)
+        self.display_model = self.display_model.sort_values('isImportant', ascending=False)
         for index, row in self.display_model.iterrows():
 
             item = hli.HouseListItem(row, self.data_cleaner.characters_csv)
@@ -64,6 +64,7 @@ class HousesTab(QtGui.QWidget):
         self.display_model = self.model
         if len(filter_text) > 0:
             self.display_model = self.display_model[self.display_model['name'].str.contains(filter_text)]
+        self.display_model = self.display_model.sort_values('isImportant', ascending=False)
         for index, row in self.display_model.iterrows():
             filename = str(row['imageLink'])
             item = hli.HouseListItem(row, self.data_cleaner.characters_csv)

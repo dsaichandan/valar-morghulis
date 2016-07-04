@@ -44,6 +44,12 @@ class DataCleaner(object):
         'Unknown': ['nan', '']
     }
 
+    important_houses = {
+        1: ['house stark', 'house targaryen', 'house martell', 'house tyrell', 'house lannister', 'house baratheon',
+            'house tully', 'house mormont', 'house baelish', 'house arryn', 'house greyjoy', 'house bolton',
+            'house florent', 'house redwyne', 'house umber', 'house frey']
+    }
+
     def change_culture(self, value):
         value = value.lower()
         v = [k for (k, v) in self.culture_cleaner.items() if value in v]
@@ -53,6 +59,11 @@ class DataCleaner(object):
         value = value.lower()
         v = [k for (k, v) in self.house_cleaner.items() if value in v]
         return v[0] if len(v) > 0 else value.title()
+
+    def is_important_house(self, value):
+        value = value.lower()
+        v = [k for (k, v) in self.important_houses.items() if value in v]
+        return v[0] if len(v) > 0 else 0
 
     def load_data(self):
         print('Data loading...')
@@ -73,7 +84,7 @@ class DataCleaner(object):
         print("Data loading finished.")
         print("---------------------------------")
 
-    def clean(self):
+    def clean(self, images_pairing_flag=False):
         # clean all the cultures
         print("Cleaning the cultures...")
         print("---------------------------------")
@@ -109,31 +120,38 @@ class DataCleaner(object):
         print("---------------------------------")
         print("Houses cleaned.")
         print("---------------------------------")
-        print("Images pairing...")
-        self.characters_csv["imageLink"] = ""
-        paired = 0
-        for index, row_csv in self.characters_csv.iterrows():
-            for index2, row_json in self.characters_json.iterrows():
-                if str(row_csv['name']) == str(row_json['name']):
-                    if pd.notnull(row_json['imageLink']):
-                        link = str(row_json['imageLink'])
-                        self.characters_csv.set_value(index, 'imageLink', link.split('/')[4])
-                    else:
-                        self.characters_csv.set_value(index, 'imageLink', 'no_image.jpg')
-                    paired += 1
-                    if paired % 100 == 0:
-                        print(paired)
-                    break
+        print("Selecting important houses.")
+        self.houses_json['isImportant'] = ''
+        self.houses_json.loc[:, "isImportant"] = [self.is_important_house(house) for house in
+                                                  self.houses_json.name]
         print("---------------------------------")
-        print("Images pairing completed.")
+        print("Important houses selected.")
         print("---------------------------------")
-        print(self.characters_csv)
+        if images_pairing_flag:
+            print("Images pairing...")
+            self.characters_csv["imageLink"] = ""
+            paired = 0
+            for index, row_csv in self.characters_csv.iterrows():
+                for index2, row_json in self.characters_json.iterrows():
+                    if str(row_csv['name']) == str(row_json['name']):
+                        if pd.notnull(row_json['imageLink']):
+                            link = str(row_json['imageLink'])
+                            self.characters_csv.set_value(index, 'imageLink', link.split('/')[4])
+                        else:
+                            self.characters_csv.set_value(index, 'imageLink', 'no_image.jpg')
+                        paired += 1
+                        if paired % 100 == 0:
+                            print(paired)
+                        break
+            print("---------------------------------")
+            print("Images pairing completed.")
+            print("---------------------------------")
 
     def save_cleaned(self):
         self.characters_csv.to_csv(self.cleaned_characters_data_filename)
+        self.houses_json.to_json(self.houses_json_filename, orient='records')
         print('Created cleaned_data.csv')
         print("---------------------------------")
-
 
     def __add_battle_data(self):
         pass
