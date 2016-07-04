@@ -105,6 +105,7 @@ class CharacterDialog(QtGui.QDialog):
         print(loss)
         results = self.neural_network.prediction()
         death_percentage = results[0][2]
+        self.neural_network.raw_data['death'] = death_percentage
         self.data['death'] = death_percentage
         self.prediction_bar.setValue(int(float(death_percentage) * 100))
 
@@ -220,7 +221,12 @@ class CharacterDialog(QtGui.QDialog):
         else:
             popularity = 0
         self.popularity_bar.setValue(popularity)
-        self.prediction_bar.setValue(0)
+
+        death = 0
+        if 'death' in self.data:
+            if pd.notnull(self.data['death']):
+                death = int(float(self.data['death'])*100)
+        self.prediction_bar.setValue(death)
         self.grid.addWidget(image_data, 0, 2, 7, 2)
         self.grid.addWidget(title_data, 7, 3)
         self.grid.addWidget(noble_data, 8, 3)

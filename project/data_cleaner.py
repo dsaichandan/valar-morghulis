@@ -102,6 +102,7 @@ class DataCleaner(object):
         unknown_heir = 0
         unknown_birth = 0
         unknown_death = 0
+        unknown_age = 0
         for index, row in self.characters_csv.iterrows():
             if row['house'] == 'Unknown':
                 unknown_house += 1
@@ -119,6 +120,8 @@ class DataCleaner(object):
                 unknown_birth += 1
             if pd.isnull(row['dateOfBirth']):
                 unknown_death += 1
+            if pd.isnull(row['age']):
+                unknown_age += 1
 
         print("Unknown houses:\t\t" + str(unknown_house))
         print("Unknown cultures:\t" + str(unknown_culture))
@@ -128,6 +131,7 @@ class DataCleaner(object):
         print("Unknown heir:\t\t" + str(unknown_heir))
         print("Unknown birth date:\t" + str(unknown_birth))
         print("Unknown death date:\t" + str(unknown_death))
+        print("Unknown age:\t" + str(unknown_age))
         print("---------------------------------")
 
     def clean(self, images_pairing_flag=False):

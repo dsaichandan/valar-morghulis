@@ -1,8 +1,6 @@
 from PySide import QtGui, QtCore
 
 import character_list_item as cli
-import project.data_cleaner as dc
-
 
 class CharactersTab(QtGui.QWidget):
     def __init__(self, neural_network, parent=None):
@@ -25,12 +23,10 @@ class CharactersTab(QtGui.QWidget):
         self.main_layout.addWidget(self.scroll)
 
         self.grid = QtGui.QGridLayout()
-        data_cleaner = dc.DataCleaner()
-        data_cleaner.load_data()
 
         it = 0
         it2 = 0
-        self.model = data_cleaner.characters_csv
+        self.model = self.neural_network.raw_data
 
         self.display_model = self.model
         self.display_model = self.display_model.sort_values('popularity', ascending=False)
