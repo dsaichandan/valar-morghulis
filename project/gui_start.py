@@ -6,7 +6,7 @@ Valar Morghulis Team
 
 from PySide import QtGui
 from model.KerasWrapper import KerasWrapper
-from model.Parameters import Parameters
+from model.parameters import Parameters
 import sys
 
 from view.main_window import MainWindow  # @NoMove

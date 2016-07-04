@@ -65,6 +65,12 @@ class DataCleaner(object):
         v = [k for (k, v) in self.important_houses.items() if value in v]
         return v[0] if len(v) > 0 else 0
 
+    def find_in_json(self, name, col):
+        idx = self.characters_json[self.characters_json['name'] == name].index.tolist()
+        if len(idx) == 0:
+            return ''
+        return self.characters_json.get_value(idx[0], col)
+
     def load_data(self):
         print('Data loading...')
         print("---------------------------------")
@@ -82,6 +88,46 @@ class DataCleaner(object):
         print("characters.json:\t\t\t" + str(self.characters_json.name.size))
         print("---------------------------------")
         print("Data loading finished.")
+        print("---------------------------------")
+
+    def data_info(self):
+        print("---------------------------------")
+        print("Data info.")
+        print("---------------------------------")
+        unknown_house = 0
+        unknown_culture = 0
+        unknown_mother = 0
+        unknown_father = 0
+        unknown_spouse = 0
+        unknown_heir = 0
+        unknown_birth = 0
+        unknown_death = 0
+        for index, row in self.characters_csv.iterrows():
+            if row['house'] == 'Unknown':
+                unknown_house += 1
+            if row['culture'] == 'Others':
+                unknown_culture += 1
+            if pd.isnull(row['mother']):
+                unknown_mother += 1
+            if pd.isnull(row['father']):
+                unknown_father += 1
+            if pd.isnull(row['spouse']):
+                unknown_spouse += 1
+            if pd.isnull(row['heir']):
+                unknown_heir += 1
+            if pd.isnull(row['DateoFdeath']):
+                unknown_birth += 1
+            if pd.isnull(row['dateOfBirth']):
+                unknown_death += 1
+
+        print("Unknown houses:\t\t" + str(unknown_house))
+        print("Unknown cultures:\t" + str(unknown_culture))
+        print("Unknown mother:\t\t" + str(unknown_mother))
+        print("Unknown father:\t\t" + str(unknown_father))
+        print("Unknown spouse:\t\t" + str(unknown_spouse))
+        print("Unknown heir:\t\t" + str(unknown_heir))
+        print("Unknown birth date:\t" + str(unknown_birth))
+        print("Unknown death date:\t" + str(unknown_death))
         print("---------------------------------")
 
     def clean(self, images_pairing_flag=False):
@@ -153,6 +199,39 @@ class DataCleaner(object):
         print('Created cleaned_data.csv')
         print("---------------------------------")
 
+    def merging_json_to_csv(self):
+        print("---------------------------------")
+        print("Merging...")
+        print("---------------------------------")
+        for index, row in self.characters_csv.iterrows():
+            house = self.find_in_json(row['name'], 'house')
+            if row['house'] == 'Unknown' and pd.isnull(house) == False:
+                self.characters_csv.set_value(index, 'house', str(house))
+            culture = self.find_in_json(row['name'], 'culture')
+            if row['culture'] == 'Others' and pd.isnull(culture) == False:
+                self.characters_csv.set_value(index, 'culture', str(culture))
+            mother = self.find_in_json(row['name'], 'mother')
+            if pd.isnull(row['mother']) and pd.isnull(mother) == False:
+                self.characters_csv.set_value(index, 'mother', str(mother))
+            father = self.find_in_json(row['name'], 'father')
+            if pd.isnull(row['father']) and pd.isnull(father) == False:
+                self.characters_csv.set_value(index, 'father', str(father))
+            spouse = self.find_in_json(row['name'], 'spouse')
+            if pd.isnull(row['spouse']) and pd.isnull(spouse) == False:
+                self.characters_csv.set_value(index, 'spouse', str(spouse))
+            heir = self.find_in_json(row['name'], 'heir')
+            if pd.isnull(row['heir']) and pd.isnull(heir) == False:
+                self.characters_csv.set_value(index, 'heir', str(heir))
+            birth = self.find_in_json(row['name'], 'dateOfBirth')
+            if pd.isnull(row['dateOfBirth']) and pd.isnull(birth) == False and birth != '':
+                self.characters_csv.set_value(index, 'dateOfBirth', float(birth))
+            death = self.find_in_json(row['name'], 'dateOfDeath')
+            if pd.isnull(row['DateoFdeath']) and pd.isnull(death) == False and death != '':
+                self.characters_csv.set_value(index, 'DateoFdeath', float(death))
+        print("---------------------------------")
+        print("Merging finished.")
+        print("---------------------------------")
+
     def __add_battle_data(self):
         pass
 
@@ -160,5 +239,9 @@ class DataCleaner(object):
 if __name__ == '__main__':
     data_cleaner = DataCleaner()
     data_cleaner.load_data()
-    data_cleaner.clean()
+    data_cleaner.data_info()
+    data_cleaner.merging_json_to_csv()
+    data_cleaner.data_info()
+
+    #data_cleaner.clean()
     data_cleaner.save_cleaned()
