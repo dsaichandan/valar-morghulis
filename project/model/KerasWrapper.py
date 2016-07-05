@@ -1,13 +1,13 @@
+import numpy as np
+import pandas as pd
+from keras.callbacks import EarlyStopping
+from keras.layers import Dense, Dropout, BatchNormalization
+from keras.models import Sequential
 from keras.utils import np_utils
 
-from keras.models import Sequential
-from keras.layers import Dense, Dropout, BatchNormalization
-from keras.callbacks import BaseLogger, ProgbarLogger, History, ModelCheckpoint, EarlyStopping
-from project.data_preproces import PreProcessor
 from project.data_cleaner import DataCleaner
+from project.data_preproces import PreProcessor
 from project.model.parameters import Parameters
-import pandas as pd
-import numpy as np
 
 
 class KerasWrapper(object):
@@ -17,6 +17,7 @@ class KerasWrapper(object):
         self.pre_processor = PreProcessor()
         self.load_data()
         self.model_constructed = False
+        self.train_completed = False
 
     def clean_data(self):
         self.data_cleaner.load_data()
@@ -26,6 +27,7 @@ class KerasWrapper(object):
     def load_data(self):
         self.data = pd.read_csv(self.params.file_path)
         self.raw_data = self.data.copy(deep=True)
+        self.data_cleaner.load_data()
 
     def __prepare_data(self):
 
@@ -90,9 +92,11 @@ class KerasWrapper(object):
         if (self.params.early):
             callbacks.append(
                 EarlyStopping(patience=self.params.patience, verbose=self.params.verbose, monitor='val_loss'))
-        return self.model.fit(input_data, output_data, validation_split=0.2,
-                              batch_size=self.params.batch_size, nb_epoch=self.params.epochs,
-                              verbose=self.params.verbose, shuffle=True, callbacks=callbacks)
+        fit = self.model.fit(input_data, output_data, validation_split=0.2,
+                             batch_size=self.params.batch_size, nb_epoch=self.params.epochs,
+                             verbose=self.params.verbose, shuffle=True, callbacks=callbacks)
+        self.train_completed = True
+        return fit
 
     def evaluate(self, input, output):
         loss, accuracy = self.model.evaluate(input, output, verbose=self.params.verbose)

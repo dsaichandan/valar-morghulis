@@ -2,7 +2,7 @@ from PySide import QtGui, QtCore
 
 import house_list_item as hli
 import project.data_cleaner as dc
-
+import pandas as pd
 
 class HousesTab(QtGui.QWidget):
     def __init__(self, parent=None):
@@ -23,18 +23,16 @@ class HousesTab(QtGui.QWidget):
         self.main_layout.addWidget(self.scroll)
 
         self.grid = QtGui.QGridLayout()
-        self.data_cleaner = dc.DataCleaner()
-        self.data_cleaner.load_data()
 
         it = 0
         it2 = 0
-        self.model = self.data_cleaner.houses_json
-
+        self.model = pd.read_json(dc.DataCleaner.houses_json_filename)
+        self.characters = pd.read_csv(dc.DataCleaner.character_predictions_filename)
         self.display_model = self.model
         self.display_model = self.display_model.sort_values('isImportant', ascending=False)
         for index, row in self.display_model.iterrows():
 
-            item = hli.HouseListItem(row, self.data_cleaner.characters_csv)
+            item = hli.HouseListItem(row, self.characters)
 
             self.grid.addWidget(item, it2, it)
             it += 1
@@ -67,7 +65,7 @@ class HousesTab(QtGui.QWidget):
                 self.display_model['name'].str.lower().str.contains(filter_text.lower())]
         self.display_model = self.display_model.sort_values('isImportant', ascending=False)
         for index, row in self.display_model.iterrows():
-            item = hli.HouseListItem(row, self.data_cleaner.characters_csv)
+            item = hli.HouseListItem(row, self.characters)
             self.grid.addWidget(item, it2, it)
             it += 1
             if it % 6 == 5:
