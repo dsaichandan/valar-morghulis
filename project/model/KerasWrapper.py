@@ -100,6 +100,18 @@ class KerasWrapper(object):
         loss, accuracy = self.model.evaluate(input, output, verbose=self.params.verbose)
         return loss, accuracy
 
+    def run_for_all_characters(self):
+
+        index = self.raw_data.index.tolist()
+
+        for i in index:
+            self.params.excluded_rows.append(i)
+            self.start_whole_process()
+            self.prediction()
+            self.params.excluded_rows = []
+
+
+
     def prediction(self):
 
         predictions = []

@@ -14,8 +14,11 @@ from view.main_window import MainWindow  # @NoMove
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
 
+
+
+    # pixmap = QtGui.QPixmap('./../poster_data/Valar-Morghulis.png')
     pixmap = QtGui.QPixmap('./../poster_data/havran_super.png')
-    pixmap = pixmap.scaled(QtCore.QSize(500, 500), aspectMode=QtCore.Qt.KeepAspectRatio,
+    pixmap = pixmap.scaled(QtCore.QSize(600, 400), aspectMode=QtCore.Qt.KeepAspectRatio,
                            mode=QtCore.Qt.SmoothTransformation)
     splash = QtGui.QSplashScreen(pixmap, QtCore.Qt.WindowStaysOnTopHint)
     splash.setMask(pixmap.mask())

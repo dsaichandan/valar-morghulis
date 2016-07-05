@@ -38,11 +38,15 @@ class ConfigurationTab(QtGui.QWidget):
         character_layout = self.__create_character_selection_area()
         character.setLayout(character_layout)
 
+        character_clear_push_button = QtGui.QPushButton('Clear', self)
+        character_clear_push_button.clicked.connect(self.__clear_characters_in_table)
+
         grid.addWidget(constants_group_box, 0, 0)
         grid.addWidget(status_group_box, 1, 0)
         grid.addWidget(train_button, 2, 0)
         grid.addWidget(character, 0, 1)
         grid.addWidget(result_group_box, 1, 1)
+        grid.addWidget(character_clear_push_button, 2, 1)
 
         self.setLayout(grid)
 
@@ -190,11 +194,8 @@ class ConfigurationTab(QtGui.QWidget):
         self.table_view.setSortingEnabled(True)
         self.table_view.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
 
-        character_clear_push_button = QtGui.QPushButton('Clear', self)
-        character_clear_push_button.clicked.connect(self.__clear_characters_in_table)
         layout = QtGui.QVBoxLayout(self)
         layout.addWidget(self.table_view)
-        layout.addWidget(character_clear_push_button)
         return layout
 
     def __clear_characters_in_table(self):
