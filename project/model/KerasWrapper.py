@@ -29,8 +29,6 @@ class KerasWrapper(object):
         self.raw_data = self.data.copy(deep=True)
         self.data_cleaner.load_data()
 
-
-
     def __prepare_data(self):
 
         self.data = self.pre_processor.convert_objects_to_categorical(self.data, self.params.converting_columns)
@@ -111,14 +109,15 @@ class KerasWrapper(object):
         self.raw_data.sort_values('popularity', ascending=False)
         index = self.raw_data.head(100).index.tolist()
         self.params.excluded_rows = []
+
+        # index = self.raw_data.index.tolist()
+
         for i in index:
             self.params.excluded_rows.append(i)
             self.start_whole_process()
             self.prediction()
             self.params.excluded_rows = []
         self.params.excluded_rows = []
-
-
 
     def prediction(self):
 
@@ -156,6 +155,7 @@ class KerasWrapper(object):
         print('Alive: ' + str(probability[0][1]) + ' %')
         print('Chosen class: ' + str(chosen_class))
         print(30 * '-')
+
 
 if __name__ == '__main__':
     kw = KerasWrapper()
