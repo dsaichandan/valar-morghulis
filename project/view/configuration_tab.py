@@ -54,7 +54,7 @@ class ConfigurationTab(QtGui.QWidget):
         self.status = self.training_status[1]
         self.__refresh_data()
         loss, accuracy = self.neural_network.start_whole_process()
-        self.loss_value = str(loss * 100) + ' %'
+        self.loss_value = str(loss) + ' (mse)'
         self.accuracy_value = str(accuracy * 100) + ' %'
         self.status = self.training_status[2]
         self.table_data = self.neural_network.prediction()
