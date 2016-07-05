@@ -28,6 +28,8 @@ class KerasWrapper(object):
         self.data = pd.read_csv(self.params.file_path)
         self.raw_data = self.data.copy(deep=True)
         self.data_cleaner.load_data()
+        self.raw_data['death'] = np.nan
+
 
     def __prepare_data(self):
 
@@ -77,8 +79,9 @@ class KerasWrapper(object):
         self.model.add(Dense(dimof_output, input_dim=dimof_input, init='uniform', activation='softmax'))
         self.model.compile(loss='mse', optimizer='sgd', metrics=['accuracy'])
 
-        self.network_weights = self.model.get_weights()
-        print(self.network_weights)
+        weight_ref = self.model.get_weights()
+        self.network_weights = np.empty_like(weight_ref)
+        self.network_weights[:] = weight_ref
 
         if (summary):
             self.model.summary()
@@ -102,6 +105,18 @@ class KerasWrapper(object):
         loss, accuracy = self.model.evaluate(input, output, verbose=self.params.verbose)
         return loss, accuracy
 
+    def run_for_all_characters(self):
+
+        index = self.raw_data.index.tolist()
+
+        for i in index:
+            self.params.excluded_rows.append(i)
+            self.start_whole_process()
+            self.prediction()
+            self.params.excluded_rows = []
+
+
+
     def prediction(self):
 
         predictions = []
@@ -112,13 +127,15 @@ class KerasWrapper(object):
             probability = self.model.predict_proba(
                 self.inputs.iloc[i].values.reshape((1, len(self.params.input_params))),
                 verbose=0)
-            character = str(self.raw_data.iloc[i, 6])
+            character = str(self.raw_data['name'][i])
 
             # rounding on 2 decimals
-            probability[0][0] = int((probability[0][0] * 100) + 0.5) / 100.0
-            probability[0][1] = int((probability[0][1] * 100) + 0.5) / 100.0
+            death = int((probability[0][0] * 100) + 0.5) / 100.0
+            life = int((probability[0][1] * 100) + 0.5) / 100.0
 
-            data = (i, character, str(probability[0][0]), str(probability[0][1]))
+            self.raw_data.set_value(i, 'death', death)
+
+            data = (i, character, str(death), str(life))
             predictions.append(data)
             self._prediction_summary(chosen_class, probability, character)
 

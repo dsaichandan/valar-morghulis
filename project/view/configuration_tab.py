@@ -1,5 +1,6 @@
 from PySide import QtGui
 from project.model.ResultTableModel import *
+import pandas as pd
 
 
 class ConfigurationTab(QtGui.QWidget):
@@ -37,11 +38,15 @@ class ConfigurationTab(QtGui.QWidget):
         character_layout = self.__create_character_selection_area()
         character.setLayout(character_layout)
 
+        character_clear_push_button = QtGui.QPushButton('Clear', self)
+        character_clear_push_button.clicked.connect(self.__clear_characters_in_table)
+
         grid.addWidget(constants_group_box, 0, 0)
         grid.addWidget(status_group_box, 1, 0)
         grid.addWidget(train_button, 2, 0)
         grid.addWidget(character, 0, 1)
         grid.addWidget(result_group_box, 1, 1)
+        grid.addWidget(character_clear_push_button, 2, 1)
 
         self.setLayout(grid)
 
@@ -49,8 +54,8 @@ class ConfigurationTab(QtGui.QWidget):
         self.status = self.training_status[1]
         self.__refresh_data()
         loss, accuracy = self.neural_network.start_whole_process()
-        self.loss_value = str(loss) + ' %'
-        self.accuracy_value = str(accuracy) + ' %'
+        self.loss_value = str(loss * 100) + ' %'
+        self.accuracy_value = str(accuracy * 100) + ' %'
         self.status = self.training_status[2]
         self.table_data = self.neural_network.prediction()
         self.__refresh_data(table=True)
@@ -144,10 +149,21 @@ class ConfigurationTab(QtGui.QWidget):
         data = self.character_edit.text()
         row = self.neural_network.raw_data.loc[self.neural_network.raw_data['name'] == self.character_edit.text()]
         index = row.index.tolist()
+
+        if (index in self.neural_network.params.excluded_rows):
+            return
+
         if (self.character_count >= 5 or len(index) == 0):
             return
         self.neural_network.params.excluded_rows.append(index[0])
-        self.table_data.append((index[0], data, 'NaN', 'NaN'))
+
+        death = 'NaN'
+        life = 'NaN'
+        if (not row['death'].isnull().values.any()):
+            death = str(row['death'].values[0] * 100)
+            life = str(100 - (row['death'].values[0] * 100))
+
+        self.table_data.append((index[0], data, death, life))
         self.__refresh_data(table=True)
 
     def __create_training_results_area(self):
@@ -178,11 +194,8 @@ class ConfigurationTab(QtGui.QWidget):
         self.table_view.setSortingEnabled(True)
         self.table_view.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
 
-        character_clear_push_button = QtGui.QPushButton('Clear', self)
-        character_clear_push_button.clicked.connect(self.__clear_characters_in_table)
         layout = QtGui.QVBoxLayout(self)
         layout.addWidget(self.table_view)
-        layout.addWidget(character_clear_push_button)
         return layout
 
     def __clear_characters_in_table(self):
