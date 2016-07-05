@@ -45,7 +45,8 @@ new_data.fillna(-1, inplace=True)
 # 'title','age',
 input_params = ['male', 'house', 'culture', 'isAliveMother', 'isAliveFather', 'isAliveHeir', 'isMarried',
                 'isNoble',
-                'numDeadRelations', 'boolDeadRelations', 'isPopular', 'popularity']
+                'numDeadRelations', 'boolDeadRelations', 'isPopular', 'popularity', 'book1', 'book2', 'book3', 'book4',
+                'book5']
 output_params = ['isAlive']
 
 exclude_rows = [1558, 1656, 1749]
@@ -70,7 +71,7 @@ y = np_utils.to_categorical(y)
 # Set constants
 batch_size = len(new_data.values) / 10
 dimof_middle = 100
-dropout = 0.2
+dropout = 0.5
 countof_epoch = 150
 verbose = 1
 print('batch_size: ', batch_size)

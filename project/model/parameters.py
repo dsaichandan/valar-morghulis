@@ -1,5 +1,5 @@
 class Parameters(object):
-    def __init__(self, batch_size=128, epochs=100, nodes=100, early=False, patience=10, verbose=1, dropout=0.2,
+    def __init__(self, batch_size=128, epochs=100, nodes=100, early=False, patience=10, verbose=1, dropout=0.5,
                  default=True, activation='tanh', file_path='./../datasets/cleaned_data.csv'):
         self.batch_size = batch_size
         self.epochs = epochs
