@@ -25,6 +25,8 @@ if __name__ == '__main__':
     app.processEvents()
     splash.show()
     neural_network = KerasWrapper()
+    #neural_network.run_for_all_characters()
+    #neural_network.raw_data.to_csv('./../datasets/cleaned_data.csv')
     app.setStyle('Plastique')
     ex = MainWindow(neural_network)
     ex.show()

@@ -28,7 +28,7 @@ class KerasWrapper(object):
         self.data = pd.read_csv(self.params.file_path)
         self.raw_data = self.data.copy(deep=True)
         self.data_cleaner.load_data()
-        self.raw_data['death'] = np.nan
+
 
 
     def __prepare_data(self):
@@ -106,14 +106,17 @@ class KerasWrapper(object):
         return loss, accuracy
 
     def run_for_all_characters(self):
-
-        index = self.raw_data.index.tolist()
-
+        self.raw_data['death'] = np.nan
+        self.raw_data['live'] = np.nan
+        self.raw_data.sort_values('popularity', ascending=False)
+        index = self.raw_data.head(100).index.tolist()
+        self.params.excluded_rows = []
         for i in index:
             self.params.excluded_rows.append(i)
             self.start_whole_process()
             self.prediction()
             self.params.excluded_rows = []
+        self.params.excluded_rows = []
 
 
 
@@ -133,7 +136,8 @@ class KerasWrapper(object):
             death = int((probability[0][0] * 100) + 0.5) / 100.0
             life = int((probability[0][1] * 100) + 0.5) / 100.0
 
-            self.raw_data.set_value(i, 'death', death)
+            self.raw_data.set_value(i, 'death', 0)
+            self.raw_data.set_value(i, 'live', 0)
 
             data = (i, character, str(death), str(life))
             predictions.append(data)
@@ -152,3 +156,8 @@ class KerasWrapper(object):
         print('Alive: ' + str(probability[0][1]) + ' %')
         print('Chosen class: ' + str(chosen_class))
         print(30 * '-')
+
+if __name__ == '__main__':
+    kw = KerasWrapper()
+    kw.run_for_all_characters()
+    kw.raw_data.to_csv('./../datasets/cleaned_data.csv')

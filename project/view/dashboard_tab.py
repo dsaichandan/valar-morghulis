@@ -39,6 +39,11 @@ class DashboardTab(QtGui.QWidget):
         # TOP 7 to DIE #
         die_box = QtGui.QGroupBox("Top 7 to die")
         self.table_data_die = []
+        data = self.neural_network.raw_data.sort_values('death', ascending=False)
+        top_7 = data.head(7)
+        i = 0
+        for index, row in top_7.iterrows():
+            self.table_data_die.append((i + 1, row['name'], row['death']))
         self.headers = ["Name", "Death rate"]
 
         self.table_model_die = ResultTableModel(die_box, self.table_data_die, self.headers)
@@ -55,10 +60,11 @@ class DashboardTab(QtGui.QWidget):
         # TOP 7 to LIVE #
         live_box = QtGui.QGroupBox("Top 7 to live")
         self.table_data_live = []
-        if self.neural_network.train_completed:
-            data = self.neural_network.raw_data.sort_values('death', ascending=False)
-            top_7 = data.head(7)
-            print(top_7)
+        data = self.neural_network.raw_data.sort_values('live', ascending=False)
+        top_7 = data.head(7)
+        i = 0
+        for index, row in top_7.iterrows():
+            self.table_data_live.append((i+1, row['name'], row['live']))
         self.headers_live = ["Name", "Live rate"]
 
         self.table_model_live = ResultTableModel(live_box, self.table_data_live, self.headers_live)
@@ -78,7 +84,18 @@ class DashboardTab(QtGui.QWidget):
 
     def update(self):
         print("update")
-        if self.neural_network.train_completed:
-            data = self.neural_network.raw_data.sort_values('death', ascending=False)
-            top_7 = data.head(7)
-            print(top_7)
+
+        self.table_data_live = []
+        data = self.neural_network.raw_data.sort_values('live', ascending=False)
+        top_7 = data.head(7)
+        i = 0
+        for index, row in top_7.iterrows():
+            self.table_data_live.append((i + 1, row['name'], row['live']))
+        self.table_model_live.changeData(self.table_data_live)
+        self.table_data_die = []
+        data = self.neural_network.raw_data.sort_values('death', ascending=False)
+        top_7 = data.head(7)
+        i = 0
+        for index, row in top_7.iterrows():
+            self.table_data_die.append((i + 1, row['name'], row['death']))
+        self.table_model_die.changeData(self.table_data_die)

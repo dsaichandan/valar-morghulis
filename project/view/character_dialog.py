@@ -222,8 +222,9 @@ class CharacterDialog(QtGui.QDialog):
         self.popularity_bar.setValue(popularity)
 
         death = 0
-        if (pd.notnull(self.data['death'])):
-            death = int(float(self.data['death']) * 100)
+        if 'death' in self.data:
+            if (pd.notnull(self.data['death'])):
+                death = int(float(self.data['death']) * 100)
         self.prediction_bar.setValue(death)
         self.grid.addWidget(image_data, 0, 2, 7, 2)
         self.grid.addWidget(title_data, 7, 3)
